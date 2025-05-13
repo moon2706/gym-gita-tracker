@@ -10,12 +10,12 @@ interface GymTypeSelectorProps {
 const GymTypeSelector = ({ gymType, setGymType }: GymTypeSelectorProps) => {
   const gymTypes = [
     'Strength Training',
+    'Bulking',
+    'Hypertrophy',
     'Cardio',
     'CrossFit',
-    'Yoga',
     'Calisthenics',
-    'Swimming',
-    'Running',
+    'HIIT',
     'Other'
   ];
 

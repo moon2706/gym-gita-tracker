@@ -15,7 +15,10 @@ const StreakCard = () => {
           <p className="text-4xl font-bold mt-2">{streak} days</p>
         </div>
         <div className="rounded-full bg-white/25 p-4">
-          <Flame size={28} className={`text-white ${streak > 0 ? 'animate-pulse-success' : ''}`} />
+          <Flame 
+            size={28} 
+            className={`text-orange-500 ${streak > 0 ? 'animate-pulse-success' : ''}`} 
+          />
         </div>
       </div>
       <div className="mt-4">
