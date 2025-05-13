@@ -8,7 +8,7 @@ export interface LogEntry {
   date: string;
   activityType: ActivityType;
   gymType?: string;
-  slokaNumber?: number;
+  slokaNumber?: string;
   notes?: string;
 }
 
@@ -20,7 +20,7 @@ interface ActivityContextType {
   getGitaCount: () => number;
   getBothCount: () => number;
   getRecentActivities: (count: number) => LogEntry[];
-  getLatestSlokaNumber: () => number | null;
+  getLatestSlokaNumber: () => string | null;
   getGymTypeDistribution: () => Record<string, number>;
 }
 
@@ -117,15 +117,35 @@ export const ActivityProvider = ({ children }: { children: ReactNode }) => {
       .slice(0, count);
   };
 
-  const getLatestSlokaNumber = () => {
+  // Compare sloka numbers for finding the latest
+  const compareSlokaNumbers = (a: string, b: string): number => {
+    // Split by decimal point
+    const [aMajor, aMinor = "0"] = a.split('.');
+    const [bMajor, bMinor = "0"] = b.split('.');
+    
+    // Compare major numbers first
+    const majorDiff = parseInt(aMajor) - parseInt(bMajor);
+    if (majorDiff !== 0) {
+      return majorDiff;
+    }
+    
+    // If major numbers are the same, compare minor numbers
+    return parseInt(aMinor) - parseInt(bMinor);
+  };
+
+  const getLatestSlokaNumber = (): string | null => {
     const gitaActivities = activities.filter(a => a.activityType === 'gita' || a.activityType === 'both');
     if (gitaActivities.length === 0) return null;
     
-    return gitaActivities
-      .filter(a => a.slokaNumber !== undefined)
-      .reduce((max, current) => {
-        return Math.max(max, current.slokaNumber || 0);
-      }, 0);
+    const gitaActivitiesWithSloka = gitaActivities.filter(a => a.slokaNumber !== undefined);
+    if (gitaActivitiesWithSloka.length === 0) return null;
+
+    return gitaActivitiesWithSloka.reduce((latest, current) => {
+      if (!latest) return current.slokaNumber!;
+      if (!current.slokaNumber) return latest;
+      
+      return compareSlokaNumbers(current.slokaNumber, latest) > 0 ? current.slokaNumber : latest;
+    }, "");
   };
 
   const getGymTypeDistribution = () => {

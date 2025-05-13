@@ -38,6 +38,16 @@ const LogPage = () => {
         });
         return;
       }
+
+      // Validate sloka number format (optional)
+      if (!/^\d+(\.\d+)?$/.test(slokaNumber)) {
+        toast({
+          title: "Error",
+          description: "Please enter a valid sloka number (e.g., 7 or 7.14)",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     // Add the activity
@@ -45,7 +55,7 @@ const LogPage = () => {
       date,
       activityType,
       gymType: activityType === 'gym' || activityType === 'both' ? gymType : undefined,
-      slokaNumber: activityType === 'gita' || activityType === 'both' ? parseInt(slokaNumber) : undefined,
+      slokaNumber: activityType === 'gita' || activityType === 'both' ? slokaNumber : undefined,
       notes,
     });
 
@@ -181,13 +191,11 @@ const LogPage = () => {
                 Sloka Number
               </label>
               <input
-                type="number"
-                min="1"
-                max="700"
+                type="text"
                 value={slokaNumber}
                 onChange={(e) => setSlokaNumber(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                placeholder="Enter sloka number (1-700)"
+                placeholder="Enter sloka number (e.g., 7 or 7.14)"
               />
             </div>
           )}

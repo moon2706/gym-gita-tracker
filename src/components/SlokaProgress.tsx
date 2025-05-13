@@ -9,7 +9,29 @@ const SlokaProgress = () => {
   const totalSlokas = 700; // Approximate number of shlokas in Bhagavad Gita
   const gitaCount = getGitaCount();
 
-  const progressPercentage = latestSloka ? Math.min((latestSloka / totalSlokas) * 100, 100) : 0;
+  // Convert string sloka to numeric value for progress calculation
+  const calculateProgress = (slokaStr: string | null): number => {
+    if (!slokaStr) return 0;
+    
+    // Split by decimal point
+    const [major, minor = "0"] = slokaStr.split('.');
+    
+    // Calculate approximate position (simplified approach)
+    // We treat chapter.verse as a decimal percentage of total progress
+    const chapter = parseInt(major);
+    const verseValue = parseInt(minor) / 100; // Convert minor part to a small decimal
+    
+    // Bhagavad Gita has 18 chapters, so each chapter is roughly 1/18th of progress
+    const progress = (chapter + verseValue) / 18 * 100;
+    
+    return Math.min(progress, 100);
+  };
+
+  const progressPercentage = calculateProgress(latestSloka);
+  
+  // Get numeric chapter for display
+  const currentChapter = latestSloka ? parseInt(latestSloka.split('.')[0]) : 0;
+  const currentVerse = latestSloka ? (latestSloka.includes('.') ? latestSloka.split('.')[1] : '0') : '0';
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-lg">
@@ -43,11 +65,13 @@ const SlokaProgress = () => {
         </div>
         <div>
           <p className="text-gray-500">Current Sloka</p>
-          <p className="font-semibold">{latestSloka || 'Not started'}</p>
+          <p className="font-semibold">
+            {latestSloka ? `${currentChapter}.${currentVerse}` : 'Not started'}
+          </p>
         </div>
         <div>
-          <p className="text-gray-500">Remaining</p>
-          <p className="font-semibold">{latestSloka ? totalSlokas - latestSloka : totalSlokas}</p>
+          <p className="text-gray-500">Chapters</p>
+          <p className="font-semibold">{latestSloka ? `${currentChapter}/18` : '0/18'}</p>
         </div>
       </div>
     </div>
