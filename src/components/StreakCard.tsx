@@ -17,7 +17,8 @@ const StreakCard = () => {
         <div className="rounded-full bg-white/25 p-4">
           <Flame 
             size={28} 
-            className={`text-orange-500 ${streak > 0 ? 'animate-pulse-success' : ''}`} 
+            className={`text-orange-500 ${streak > 0 ? 'animate-pulse-success' : ''}`}
+            fill="#F97316"
           />
         </div>
       </div>
